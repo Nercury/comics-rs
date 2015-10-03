@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'comics';
-  src: url('/font/comics.eot');
-  src: url('/font/comics.eot#iefix') format('embedded-opentype'),
-       url('/font/comics.woff') format('woff'),
-       url('/font/comics.ttf') format('truetype'),
-       url('/font/comics.svg#comics') format('svg');
+  src: url('/font/comics.eot?18797893');
+  src: url('/font/comics.eot?18797893#iefix') format('embedded-opentype'),
+       url('/font/comics.woff?18797893') format('woff'),
+       url('/font/comics.ttf?18797893') format('truetype'),
+       url('/font/comics.svg?18797893#comics') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -44,19 +44,17 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
 
-.icon-to-start:before { content: '\e800'; } /* '' */
-.icon-to-end:before { content: '\e801'; } /* '' */
-.icon-back:before { content: '\e802';
-    -moz-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    transform: rotate(180deg);
-    padding-bottom: 1px;
- } /* '' */
-.icon-play:before { content: '\e802'; } /* '' */
-.icon-search:before { content: '\e803'; } /* '' */
-.icon-rss:before { content: '\e804'; } /* '' */
-.icon-chat:before { content: '\e805'; } /* '' */
-.icon-pencil:before { content: '\e806'; } /* '' */
-.icon-hash:before { content: '\e807'; } /* '' */
+.icon-left-fat:before { content: '\e800'; } /* '' */
+.icon-right-fat:before { content: '\e801'; } /* '' */
+.icon-to-start:before { content: '\e802'; } /* '' */
+.icon-to-end:before { content: '\e803'; } /* '' */
+.icon-search:before { content: '\e804'; } /* '' */
+.icon-mail:before { content: '\e805'; } /* '' */
+.icon-trash:before { content: '\e806'; } /* '' */
+.icon-twitter:before { content: '\e807'; } /* '' */
+.icon-gplus:before { content: '\e808'; } /* '' */
+.icon-reddit:before { content: '\e809'; } /* '' */
+.icon-rss:before { content: '\e80a'; } /* '' */
+.icon-email:before { content: '\e80b'; } /* '' */
+.icon-facebook:before { content: '\e80c'; } /* '' */
+.icon-help:before { content: '\e80d'; } /* '' */

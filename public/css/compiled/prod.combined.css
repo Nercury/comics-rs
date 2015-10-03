@@ -174,7 +174,6 @@ ul.nav>li>a.first, ul.nav>li>a.last {
     -o-transform: rotate(180deg);
     -ms-transform: rotate(180deg);
     transform: rotate(180deg);
-    padding-bottom: 1px;
  } /* '' */
 .icon-play:before { content: '\e802'; } /* '' */
 .icon-search:before { content: '\e803'; } /* '' */

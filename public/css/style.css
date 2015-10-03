@@ -43,37 +43,63 @@ div.wrapper {
     padding: 0 1em 0 1em;
 }
 
-ul.nav,ul.nav>li {
+.nav {
+    float:right;
+    position:relative;
+    left:-50%;
+}
+
+.nav ul {
+    list-style:none;
+    position:relative;
+    left:50%;
+}
+
+.nav li {
     display: block;
     float: left;
     text-transform: uppercase;
-    margin-top: 0.2em;
+    margin-top: 0.3em;
     padding: 0 0.2em 0 0.2em;
 }
 
-ul.nav>li>a {
+.nav li>a {
+    float: left;
     background: #f9f9f9;
     border-radius: 0.5em;
     border: 0.1em solid black;
-    padding: 0.2em 0.4em 0.2em 0.4em;
+    margin-top: -0.3em;
+    padding: 0.2em 0.55em 0.2em 0.4em;
+    opacity: 0.6;
 }
 
-ul.nav>li>a:hover {
+.nav li>a:hover {
     background: #fff;
     -webkit-box-shadow: 0 0 2px 1px #999999;
     box-shadow: 0 0 2px 1px #999999;
+    opacity: 1;
 }
 
-ul.nav>li>a:focus {
+.nav li>a:focus {
     background: #fff;
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-
-ul.nav>li>a.prev, ul.nav>li>a.next {
+/*
+.nav li>a.prev, .nav li>a.next {
     padding: 0.2em 0.4em 0.2em 0.15em;
-}
-
-ul.nav>li>a.first, ul.nav>li>a.last {
+}*/
+/*
+.nav li>a.first, .nav li>a.last {
     padding: 0.2em 0.4em 0.2em 0.3em;
+}*/
+
+@media (max-width: 40em) {
+    .nav li>a {
+        padding: 0.2em 0.4em 0.2em 0.4em;
+    }
+
+    .nav li>a span {
+        display: none;
+    }
 }
