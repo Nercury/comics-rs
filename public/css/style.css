@@ -1,0 +1,79 @@
+.hidden {
+    display: none;
+}
+
+.inputs label
+{
+    color: #666;
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+.inputs input[type="text"], .inputs textarea
+{
+    color: #444;
+    font-size: 0.5cm;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 5px;
+    border: solid 1px #aaa;
+    width: 300px;
+    background-color: #f9f9f9;
+    border-radius: 0.5em;
+}
+
+.name-form {
+    margin-top: 1cm;
+    margin-bottom: 1cm;
+    text-align: center;
+}
+
+.name-form input[type="text"] {
+    text-align: center;
+}
+
+body {
+    font-size: 0.5cm;
+    background-color: #eee;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+div.wrapper {
+    max-width:50em;
+    margin:0 auto;
+    padding: 0 1em 0 1em;
+}
+
+ul.nav,ul.nav>li {
+    display: block;
+    float: left;
+    text-transform: uppercase;
+    margin-top: 0.2em;
+    padding: 0 0.2em 0 0.2em;
+}
+
+ul.nav>li>a {
+    background: #f9f9f9;
+    border-radius: 0.5em;
+    border: 0.1em solid black;
+    padding: 0.2em 0.4em 0.2em 0.4em;
+}
+
+ul.nav>li>a:hover {
+    background: #fff;
+    -webkit-box-shadow: 0 0 2px 1px #999999;
+    box-shadow: 0 0 2px 1px #999999;
+}
+
+ul.nav>li>a:focus {
+    background: #fff;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+ul.nav>li>a.prev, ul.nav>li>a.next {
+    padding: 0.2em 0.4em 0.2em 0.15em;
+}
+
+ul.nav>li>a.first, ul.nav>li>a.last {
+    padding: 0.2em 0.4em 0.2em 0.3em;
+}

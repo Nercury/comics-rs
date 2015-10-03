@@ -1,0 +1,59 @@
+use std::error::Error;
+use std::env;
+use std::fs;
+use std::fs::File;
+use std::io::Write;
+use std::path::{ Path, PathBuf };
+use std::collections::VecDeque;
+use std::process;
+
+fn main() {
+    let out_dir = env::var_os("OUT_DIR").unwrap();
+
+    let dest_path = Path::new(&out_dir).join("release.rs");
+    let mut f = File::create(&dest_path).unwrap();
+
+    let output = process::Command::new("git")
+                     .arg("log")
+                     .arg("--pretty=format:%h")
+                     .arg("-n")
+                     .arg("1")
+                     .output()
+                     .unwrap_or_else(|e| { panic!("failed to execute process: {}", e) });
+    let commit_num = output.stdout;
+
+    let s = format!("
+        pub fn version() -> &'static str {{
+            \"{}\"
+        }}
+    ", String::from_utf8_lossy(&commit_num));
+
+    f.write_all(&s.bytes().collect::<Vec<_>>()).unwrap();
+
+    let src = Path::new("static").to_path_buf();
+    let dst = Path::new("target");
+
+    let mut copy_queue: VecDeque<PathBuf> = VecDeque::new();
+    copy_queue.push_front(src);
+
+    while let Some(dir) = copy_queue.pop_back() {
+        let _ = fs::create_dir(dst.join(&dir));
+
+        let list = fs::read_dir(dir.clone()).ok().expect(&format!("expected to read dir {:?}", dir));
+        for maybe_entry in list {
+            match maybe_entry {
+                Ok(entry) => {
+                    match fs::metadata(entry.path()) {
+                        Ok(md) => if md.is_dir() {
+                            copy_queue.push_front(entry.path().to_path_buf());
+                        } else {
+                            let _ = fs::copy(entry.path(), dst.join(entry.path()));
+                        },
+                        Err(why) => panic!("failed to get metadata for {:?}: {}", entry.path(), Error::description(&why)),
+                    }
+                },
+                Err(why) => panic!("read entry in list: {}", Error::description(&why)),
+            }
+        }
+    }
+}

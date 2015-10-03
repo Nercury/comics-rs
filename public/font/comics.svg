@@ -1,0 +1,19 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2015 by original authors @ fontello.com</metadata>
+<defs>
+<font id="comics" horiz-adv-x="1000" >
+<font-face font-family="comics" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="to-start" unicode="&#xe800;" d="m911-97l-670 448 670 446 0-894z m-893 113l0 669 223 0 0-669-223 0z" horiz-adv-x="928" />
+<glyph glyph-name="to-end" unicode="&#xe801;" d="m18 797l670-446-670-448 0 894z m670-781l0 669 223 0 0-669-223 0z" horiz-adv-x="928" />
+<glyph glyph-name="play" unicode="&#xe802;" d="m18 797l670-446-670-448 0 894z" horiz-adv-x="705" />
+<glyph glyph-name="search" unicode="&#xe803;" d="m335 246l25-25q-28-28-85-86t-73-74l-27 27q16 15 74 73t86 85z m245 551q136 0 234-97t97-234-97-234-234-96q-64 0-123 24l-255-257-184 185 256 255q-26 63-26 123 0 137 98 234t234 97z m0-551q91 0 155 64t64 156-64 155-155 64-156-64-64-155 64-156 156-64z" horiz-adv-x="928" />
+<glyph glyph-name="rss" unicode="&#xe804;" d="m784-97q0 209-103 385t-279 279-384 103l0 127q181 0 347-71t285-190 190-285 71-348l-127 0z m-256 0q0 212-150 361t-360 150l0 129q173 0 320-86t233-233 85-321l-128 0z m-254 0q0 107-75 182t-181 75l0 127q158 0 271-112t112-272l-127 0z m-129 0l-127 0 0 128q53 0 90-38t37-90z" horiz-adv-x="928" />
+<glyph glyph-name="chat" unicode="&#xe805;" d="m743 456q74-14 121-68t47-149q0-113-65-168t-158-55l-112 0q-46 0-79-34t-33-79q-92 0-157 66t-66 158l0 112q0 29 6 56l106 0q2 0 5-1t4-1q-9-23-9-54l0-112q0-56 44-88 67 88 179 88l112 0q111 0 111 112 0 96-80 109 21 48 24 108z m-279 229l-223 0q-39 0-64-11t-34-33-11-35-2-32q0-112 111-112l112 0q111 0 179-89 44 33 44 89l0 112q0 65-34 88t-78 23z m0 112q92 0 158-58t66-165l0-112q0-92-65-158t-159-65q0 46-33 79t-78 33l-112 0q-93 0-158 55t-65 168q0 114 65 168t158 55l223 0z" horiz-adv-x="928" />
+<glyph glyph-name="pencil" unicode="&#xe806;" d="m846 732q66-66 66-158t-66-157l-512-514-316 0 1 318 511 511q65 65 158 65t158-65z m-558-716l478 479-158 157-474-473q34 29 78 27t75-32q32-32 32-79t-32-79l1 0z" horiz-adv-x="928" />
+<glyph glyph-name="hash" unicode="&#xe807;" d="m799 462l-153 0-28-223 181 0 0-112-195 0-28-224-112 0 28 224-223 0-28-224-111 0 27 224-139 0 0 112 154 0 27 223-181 0 0 112 196 0 27 223 112 0-28-223 223 0 28 223 112 0-28-223 139 0 0-112z m-293-223l28 223-223 0-28-223 223 0z" horiz-adv-x="817" />
+</font>
+</defs>
+</svg>

@@ -1,0 +1,19 @@
+[package]
+build = "build.rs"
+name = "comics"
+version = "0.0.1"
+authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
+
+[dependencies]
+iron = "*"
+hyper = "*"
+time = "*"
+router = "*"
+mount = "*"
+unicase = "*"
+
+[dependencies.staticfile]
+version = "*"
+
+[features]
+prod = []
