@@ -5,12 +5,16 @@ extern crate mount;
 extern crate router;
 extern crate staticfile;
 extern crate unicase;
+extern crate serde;
+extern crate serde_json;
 
+mod index;
 mod template;
 mod globals;
 mod iron_ex;
 mod headers;
 mod release;
+mod index_models;
 
 use iron::prelude::*;
 use iron::status;
@@ -21,6 +25,7 @@ use hyper::header::{ContentType};
 use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 
 use std::path::Path;
+use std::sync::Mutex;
 use mount::Mount;
 use staticfile::Static;
 
@@ -56,6 +61,7 @@ fn send_page(_req: &mut Request) -> IronResult<Response> {
 }
 
 fn main() {
+    let index = Mutex::new(index::Index::from_file("data/index.json"));
     let tmp = Box::new(template::parse("static/plain/main.html", globals::Globals::new()));
     unsafe { MAIN_HTML = mem::transmute(tmp) };
 

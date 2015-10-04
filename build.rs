@@ -8,6 +8,8 @@ use std::collections::VecDeque;
 use std::process;
 
 fn main() {
+    inner::main();
+
     let out_dir = env::var_os("OUT_DIR").unwrap();
 
     let dest_path = Path::new(&out_dir).join("release.rs");
@@ -56,4 +58,30 @@ fn main() {
             }
         }
     }
+}
+
+#[cfg(not(feature = "serde_macros"))]
+mod inner {
+    extern crate syntex;
+    extern crate serde_codegen;
+
+    use std::env;
+    use std::path::Path;
+
+    pub fn main() {
+        let out_dir = env::var_os("OUT_DIR").unwrap();
+
+        let src = Path::new("src/index_models.rs.in");
+        let dst = Path::new(&out_dir).join("index_models.rs");
+
+        let mut registry = syntex::Registry::new();
+
+        serde_codegen::register(&mut registry);
+        registry.expand("", &src, &dst).unwrap();
+    }
+}
+
+#[cfg(feature = "serde_macros")]
+mod inner {
+    pub fn main() {}
 }

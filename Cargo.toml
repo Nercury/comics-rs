@@ -11,6 +11,12 @@ time = "*"
 router = "*"
 mount = "*"
 unicase = "*"
+serde = "*"
+serde_json = "*"
+
+[build-dependencies]
+serde_codegen = "*"
+syntex = "*"
 
 [dependencies.staticfile]
 version = "*"
