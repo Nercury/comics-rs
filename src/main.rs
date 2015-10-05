@@ -18,7 +18,6 @@ mod index_models;
 
 use iron::prelude::*;
 use iron::status;
-use std::mem;
 use std::convert::AsRef;
 
 use hyper::header::{ContentType};
@@ -30,26 +29,6 @@ use std::sync::Arc;
 use mount::Mount;
 use staticfile::Static;
 use router::Router;
-
-static mut MAIN_HTML: *mut u8 = 0 as *mut u8;
-
-fn send_main(req: &mut Request) -> IronResult<Response> {
-    if req.url.path.len() == 1 && req.url.path[0] != "" {
-        return Ok(Response::with(status::NotFound));
-    }
-
-    let html: &Box<Vec<u8>> = unsafe { mem::transmute_copy(&&MAIN_HTML) };
-    let slice: &[u8] = (*html).as_ref();
-    let mut response = Response::with((status::Ok, slice));
-
-    response.headers.set(
-        ContentType(
-            Mime(TopLevel::Text, SubLevel::Html, vec![(Attr::Charset, Value::Utf8)])
-        )
-    );
-
-    Ok(response)
-}
 
 fn append_link(
     vals: &mut globals::Globals,
@@ -130,8 +109,6 @@ fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response
 
 fn main() {
     let index = Arc::new(Mutex::new(index::Index::from_file("data/index.json")));
-    let tmp = Box::new(template::parse("static/plain/main.html", globals::Globals::new()));
-    unsafe { MAIN_HTML = mem::transmute(tmp) };
 
     let mut router = Router::new();
     router.get("/:slug", move |req: &mut Request| -> IronResult<Response> {
@@ -148,7 +125,6 @@ fn main() {
 
     let mut mount = Mount::new();
     mount
-        .mount("/", send_main)
         .mount("/c/", router)
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
