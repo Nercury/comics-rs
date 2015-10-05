@@ -128,14 +128,17 @@ div.wrapper {
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-/*
-.nav li>a.prev, .nav li>a.next {
-    padding: 0.2em 0.4em 0.2em 0.15em;
-}*/
-/*
-.nav li>a.first, .nav li>a.last {
-    padding: 0.2em 0.4em 0.2em 0.3em;
-}*/
+
+.nav li>a.disabled, .nav li>a.disabled:hover, .nav li>a.disabled:focus {
+    background: #ccc;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.6;
+    cursor: default;
+    color: #aaa;
+    text-shadow: 1px 1px 1px #fff;
+    border-color: #999;
+}
 
 @media (max-width: 40em) {
     .nav li>a {

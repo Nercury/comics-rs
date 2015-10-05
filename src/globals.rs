@@ -38,9 +38,13 @@ impl Globals {
     }
 
     pub fn with(mut self, key: &'static str, value: String) -> Globals {
-        self.values.insert(key.as_bytes(), value);
+        self.amend(key, value);
 
         self
+    }
+
+    pub fn amend(&mut self, key: &'static str, value: String) {
+        self.values.insert(key.as_bytes(), value);
     }
 
     pub fn get<'g, 'r>(&'g self, key: &'r [u8]) -> Option<&'g str> {

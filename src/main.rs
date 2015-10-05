@@ -51,19 +51,67 @@ fn send_main(req: &mut Request) -> IronResult<Response> {
     Ok(response)
 }
 
+fn append_link(
+    vals: &mut globals::Globals,
+    disabled_key: &'static str,
+    href_key: &'static str,
+    href: Option<String>
+) {
+    vals.amend(disabled_key, match href {
+        None => "disabled".into(),
+        _ => "".into(),
+    });
+    vals.amend(href_key, match href {
+        Some(href) => href,
+        None => "javascript:;".into(),
+    });
+}
+
 fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response> {
     match req.extensions.get::<Router>()
         .unwrap().find("slug") {
             Some(ref slug) => {
                 match index.find(slug) {
                     Some(found) => {
+                        let mut vals = globals::Globals::new()
+                            .with("title", found.title)
+                            .with("file", ["/i/", found.file.to_string_lossy().as_ref()].concat())
+                            .with("width", "".into())
+                            .with("height", "".into());
+
+                        append_link(&mut vals, "first_disabled", "first_href", match index.first_slug() {
+                            Some(slug) => if slug == found.slug {
+                                None
+                            } else {
+                                Some(["/c/", slug.as_ref()].concat())
+                            },
+                            None => None,
+                        });
+
+                        append_link(&mut vals, "prev_disabled", "prev_href", match found.prev_slug {
+                            Some(slug) => Some(["/c/", slug.as_ref()].concat()),
+                            None => None,
+                        });
+
+                        append_link(&mut vals, "random_disabled", "random_href", None);
+
+                        append_link(&mut vals, "next_disabled", "next_href", match found.next_slug {
+                            Some(slug) => Some(["/c/", slug.as_ref()].concat()),
+                            None => None,
+                        });
+
+                        append_link(&mut vals, "last_disabled", "last_href", match index.last_slug() {
+                            Some(slug) => if slug == found.slug {
+                                None
+                            } else {
+                                Some(["/c/", slug.as_ref()].concat())
+                            },
+                            None => None,
+                        });
+
                         let parsed = template::parse(
                             "static/plain/comic.html",
-                            globals::Globals::new()
-                                .with("title", found.title)
-                                .with("file", ["/i/", found.file.to_string_lossy().as_ref()].concat())
-                                .with("width", "".into())
-                                .with("height", "".into())
+                            vals
                         );
                         let mut response = Response::with((status::Ok, parsed));
                         response.headers.set(

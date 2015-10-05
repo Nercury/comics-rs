@@ -30,6 +30,7 @@ struct Storage {
 #[derive(Debug)]
 struct FoundIndex {
     pub title: String,
+    pub slug: String,
     pub file: PathBuf,
     pub prev_slug: Option<String>,
     pub next_slug: Option<String>,
@@ -127,6 +128,7 @@ impl Index {
                 };
                 Some(FoundIndex {
                     title: item.title.clone(),
+                    slug: item.slug.clone(),
                     file: item.file.clone(),
                     prev_slug: match prev {
                         Some(pi) => Some(pi.slug.clone()),
@@ -139,6 +141,22 @@ impl Index {
                 })
             },
             None => None,
+        }
+    }
+
+    pub fn first_slug(&self) -> Option<String> {
+        if self.storage.items.len() > 0 {
+            Some(self.storage.items[0].slug.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn last_slug(&self) -> Option<String> {
+        if self.storage.items.len() > 0 {
+            Some(self.storage.items[self.storage.items.len() - 1].slug.clone())
+        } else {
+            None
         }
     }
 }
