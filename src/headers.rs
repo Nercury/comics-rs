@@ -13,6 +13,7 @@ impl AfterMiddleware for StaticHeaders {
 
         let is_static_file = match res.headers.get::<ContentType>() {
             Some(&ContentType(Mime(TopLevel::Text, SubLevel::Css, _))) => true,
+            Some(&ContentType(Mime(TopLevel::Image, SubLevel::Jpeg, _))) => true,
             Some(&ContentType(Mime(TopLevel::Application, SubLevel::Javascript, _))) => true,
             Some(&ContentType(Mime(TopLevel::Image, SubLevel::Ext(ref kind), _))) => {
                 match &kind[..] {
