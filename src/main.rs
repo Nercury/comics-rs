@@ -61,6 +61,9 @@ fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response
                             "static/plain/comic.html",
                             globals::Globals::new()
                                 .with("title", found.title)
+                                .with("file", ["/i/", found.file.to_string_lossy().as_ref()].concat())
+                                .with("width", "".into())
+                                .with("height", "".into())
                         );
                         let mut response = Response::with((status::Ok, parsed));
                         response.headers.set(
@@ -102,6 +105,7 @@ fn main() {
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
         .mount("/font/", Static::new(Path::new("public/font")))
+        .mount("/i/", Static::new(Path::new("data/images")))
     ;
 
     let mut chain = Chain::new(mount);

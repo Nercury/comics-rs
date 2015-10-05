@@ -9,10 +9,10 @@
         <div class="wrapper">
             <div class="nav">
                 <ul>
-                    <li><a class="first icon-to-start" href="javascript:;">
+                    <li><a class="first disabled icon-to-start" href="javascript:;">
                         <span>First</span>
                     </a></li>
-                    <li><a class="prev icon-left-fat" href="javascript:;">
+                    <li><a class="prev disabled icon-left-fat" href="javascript:;">
                         <span>Prev</span>
                     </a></li>
                     <li><a class="random icon-help" href="javascript:;">
@@ -26,7 +26,9 @@
                     </a></li>
                 </ul>
             </div>
+            <div>
+                <img src="{{ file }}" alt="{{ title }}" width="{{ width }}" height={{ height }} />
+            </div>
         </div>
-        {{ js }}
     </body>
 </html>
