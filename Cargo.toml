@@ -13,6 +13,7 @@ mount = "*"
 unicase = "*"
 serde = "*"
 serde_json = "*"
+rand = "*"
 
 [build-dependencies]
 serde_codegen = "*"

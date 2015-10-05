@@ -3,6 +3,8 @@ use std::path::{ Path, PathBuf };
 use serde_json;
 use std::io::prelude::*;
 use std::fs::File;
+use rand;
+use rand::distributions::{IndependentSample, Range};
 
 use index_models::IndexRepr;
 
@@ -155,6 +157,16 @@ impl Index {
     pub fn last_slug(&self) -> Option<String> {
         if self.storage.items.len() > 0 {
             Some(self.storage.items[self.storage.items.len() - 1].slug.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn random_slug(&self) -> Option<String> {
+        if self.storage.items.len() > 0 {
+            let between = Range::new(0, self.storage.items.len());
+            let random_index = between.ind_sample(&mut rand::thread_rng());
+            Some(self.storage.items[random_index].slug.clone())
         } else {
             None
         }

@@ -7,6 +7,7 @@ extern crate staticfile;
 extern crate unicase;
 extern crate serde;
 extern crate serde_json;
+extern crate rand;
 
 mod index;
 mod template;
@@ -20,6 +21,8 @@ use iron::prelude::*;
 use iron::status;
 use std::convert::AsRef;
 
+use hyper::header::{CacheControl, CacheDirective};
+use hyper::header::Location;
 use hyper::header::{ContentType};
 use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 
@@ -72,7 +75,9 @@ fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response
                             None => None,
                         });
 
-                        append_link(&mut vals, "random_disabled", "random_href", None);
+                        append_link(&mut vals, "random_disabled", "random_href", Some(
+                            "/random".into()
+                        ));
 
                         append_link(&mut vals, "next_disabled", "next_href", match found.next_slug {
                             Some(slug) => Some(["/c/", slug.as_ref()].concat()),
@@ -108,11 +113,13 @@ fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response
 }
 
 fn main() {
+    // our "database", simply load from json file.
     let index = Arc::new(Mutex::new(index::Index::from_file("data/index.json")));
 
+    let index_for_pages = index.clone();
     let mut router = Router::new();
     router.get("/:slug", move |req: &mut Request| -> IronResult<Response> {
-        match index.lock() {
+        match index_for_pages.lock() {
             Ok(mut index) => {
                 send_page(&mut index, req)
             },
@@ -124,12 +131,38 @@ fn main() {
     });
 
     let mut mount = Mount::new();
+    let index_for_random = index.clone();
     mount
         .mount("/c/", router)
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
         .mount("/font/", Static::new(Path::new("public/font")))
         .mount("/i/", Static::new(Path::new("data/images")))
+        .mount("/random", move |_req: &mut Request| -> IronResult<Response> {
+            match index_for_random.lock() {
+                Ok(index) => {
+                    match index.random_slug() {
+                        Some(slug) => {
+                            let mut response = Response::with(status::SeeOther);
+                            response.headers.set(
+                                Location(["/c/", slug.as_ref()].concat())
+                            );
+                            response.headers.set(
+                                CacheControl(vec![
+                                    CacheDirective::NoCache,
+                                ])
+                            );
+                            Ok(response)
+                        },
+                        None => Ok(Response::with(status::NotFound)),
+                    }
+                },
+                Err(e) => {
+                    println!("Error locking index: {:?}", e);
+                    Ok(Response::with(status::NotFound))
+                }
+            }
+        })
     ;
 
     let mut chain = Chain::new(mount);
