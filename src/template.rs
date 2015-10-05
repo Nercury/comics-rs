@@ -16,7 +16,12 @@ fn get_replacement<'g>(sequence: &[u8], globals: &'g Globals) -> &'g [u8] {
     match sequence {
         b"css" => globals.get_css_links(),
         b"js" => globals.get_js_links(),
-        other => panic!("unexpected key {:?}", String::from_utf8_lossy(other)),
+        other => {
+            match globals.get(other) {
+                Some(v) => v.as_bytes(),
+                None => panic!("unexpected key {:?}", String::from_utf8_lossy(other)),
+            }
+        },
     }
 }
 

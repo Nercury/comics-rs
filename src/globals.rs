@@ -1,6 +1,9 @@
+use std::collections::HashMap;
+
 pub struct Globals {
     js_links: Vec<u8>,
     css_links: Vec<u8>,
+    values: HashMap<&'static [u8], String>,
 }
 
 impl Globals {
@@ -29,7 +32,21 @@ impl Globals {
                 }
 
                 res
-            }
+            },
+            values: HashMap::new(),
+        }
+    }
+
+    pub fn with(mut self, key: &'static str, value: String) -> Globals {
+        self.values.insert(key.as_bytes(), value);
+
+        self
+    }
+
+    pub fn get<'g, 'r>(&'g self, key: &'r [u8]) -> Option<&'g str> {
+        match self.values.get(key) {
+            Some(v) => Some(&v),
+            None => None,
         }
     }
 

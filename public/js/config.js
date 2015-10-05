@@ -3,7 +3,7 @@ require.config({
         "underscore":   "../compiled/bower.ugly",
         "jquery":       "../compiled/bower.ugly",
     },
-    baseUrl: 'js/src'
+    baseUrl: '/js/src'
 });
 
 require(["main"]);

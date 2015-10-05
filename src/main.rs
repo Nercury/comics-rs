@@ -26,8 +26,10 @@ use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 
 use std::path::Path;
 use std::sync::Mutex;
+use std::sync::Arc;
 use mount::Mount;
 use staticfile::Static;
+use router::Router;
 
 static mut MAIN_HTML: *mut u8 = 0 as *mut u8;
 
@@ -49,26 +51,54 @@ fn send_main(req: &mut Request) -> IronResult<Response> {
     Ok(response)
 }
 
-fn send_page(_req: &mut Request) -> IronResult<Response> {
-    let parsed = template::parse("static/plain/comic.html", globals::Globals::new());
-    let mut response = Response::with((status::Ok, parsed));
-    response.headers.set(
-        ContentType(
-            Mime(TopLevel::Text, SubLevel::Html, vec![(Attr::Charset, Value::Utf8)])
-        )
-    );
-    Ok(response)
+fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response> {
+    match req.extensions.get::<Router>()
+        .unwrap().find("slug") {
+            Some(ref slug) => {
+                match index.find(slug) {
+                    Some(found) => {
+                        let parsed = template::parse(
+                            "static/plain/comic.html",
+                            globals::Globals::new()
+                                .with("title", found.title)
+                        );
+                        let mut response = Response::with((status::Ok, parsed));
+                        response.headers.set(
+                            ContentType(
+                                Mime(TopLevel::Text, SubLevel::Html, vec![(Attr::Charset, Value::Utf8)])
+                            )
+                        );
+                        Ok(response)
+                    },
+                    None => Ok(Response::with(status::NotFound)),
+                }
+            },
+            None => Ok(Response::with(status::NotFound)),
+        }
 }
 
 fn main() {
-    let index = Mutex::new(index::Index::from_file("data/index.json"));
+    let index = Arc::new(Mutex::new(index::Index::from_file("data/index.json")));
     let tmp = Box::new(template::parse("static/plain/main.html", globals::Globals::new()));
     unsafe { MAIN_HTML = mem::transmute(tmp) };
+
+    let mut router = Router::new();
+    router.get("/:slug", move |req: &mut Request| -> IronResult<Response> {
+        match index.lock() {
+            Ok(mut index) => {
+                send_page(&mut index, req)
+            },
+            Err(e) => {
+                println!("Error locking index: {:?}", e);
+                Ok(Response::with(status::NotFound))
+            }
+        }
+    });
 
     let mut mount = Mount::new();
     mount
         .mount("/", send_main)
-        .mount("/c/", send_page)
+        .mount("/c/", router)
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
         .mount("/font/", Static::new(Path::new("public/font")))

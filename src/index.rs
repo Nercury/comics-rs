@@ -27,6 +27,14 @@ struct Storage {
     slug_map: HashMap<String, usize>,
 }
 
+#[derive(Debug)]
+struct FoundIndex {
+    pub title: String,
+    pub file: PathBuf,
+    pub prev_slug: Option<String>,
+    pub next_slug: Option<String>,
+}
+
 impl Storage {
     fn from_file(path: &Path) -> Option<Storage> {
         let mut f = match File::open(path) {
@@ -102,6 +110,35 @@ impl Index {
         Index {
             path: path.into(),
             storage: storage,
+        }
+    }
+
+    pub fn find<'r>(&self, slug: &'r str) -> Option<FoundIndex> {
+        match self.storage.slug_map.get(slug) {
+            Some(index) => {
+                let item = &self.storage.items[*index];
+                let next = match item.next {
+                    Some(index) => Some(&self.storage.items[index]),
+                    None => None,
+                };
+                let prev = match item.prev {
+                    Some(index) => Some(&self.storage.items[index]),
+                    None => None,
+                };
+                Some(FoundIndex {
+                    title: item.title.clone(),
+                    file: item.file.clone(),
+                    prev_slug: match prev {
+                        Some(pi) => Some(pi.slug.clone()),
+                        None => None,
+                    },
+                    next_slug: match next {
+                        Some(ni) => Some(ni.slug.clone()),
+                        None => None,
+                    },
+                })
+            },
+            None => None,
         }
     }
 }
