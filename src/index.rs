@@ -12,7 +12,7 @@ use index_models::IndexRepr;
 pub struct IndexItem {
     title: String,
     slug: String,
-    file: PathBuf,
+    file: String,
     prev: Option<usize>,
     next: Option<usize>,
 }
@@ -33,7 +33,7 @@ struct Storage {
 struct FoundIndex {
     pub title: String,
     pub slug: String,
-    pub file: PathBuf,
+    pub file: String,
     pub prev_slug: Option<String>,
     pub next_slug: Option<String>,
 }
@@ -63,7 +63,7 @@ impl Storage {
         let mut storage = Storage::empty();
 
         for item in deserialized {
-            storage.push(item.title, item.slug, &Path::new(&item.file));
+            storage.push(item.title, item.slug, &item.file);
         }
 
         println!("Storage {:#?}", storage);
@@ -78,7 +78,7 @@ impl Storage {
         }
     }
 
-    fn push<T: Into<String>, S: Into<String>>(&mut self, title: T, slug: S, file: &Path) {
+    fn push<T: Into<String>, S: Into<String>>(&mut self, title: T, slug: S, file: &str) {
         let title: String = title.into();
         let slug: String = slug.into();
         let prev_index = if self.items.len() == 0 {

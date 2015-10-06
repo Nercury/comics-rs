@@ -8,6 +8,7 @@ extern crate unicase;
 extern crate serde;
 extern crate serde_json;
 extern crate rand;
+extern crate image;
 
 mod index;
 mod template;
@@ -16,6 +17,8 @@ mod iron_ex;
 mod headers;
 mod release;
 mod index_models;
+mod resizer;
+mod resizer_models;
 
 use iron::prelude::*;
 use iron::status;
@@ -32,6 +35,7 @@ use std::sync::Arc;
 use mount::Mount;
 use staticfile::Static;
 use router::Router;
+use resizer::{ Resizer, ResizeMode, SizeHint };
 
 fn append_link(
     vals: &mut globals::Globals,
@@ -49,15 +53,25 @@ fn append_link(
     });
 }
 
-fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response> {
+fn send_page(index: &mut index::Index, resizer: &mut Resizer, req: &mut Request) -> IronResult<Response> {
     match req.extensions.get::<Router>()
         .unwrap().find("slug") {
             Some(ref slug) => {
                 match index.find(slug) {
                     Some(found) => {
+                        let image_url = match resizer.get_resized_url(
+                            &found.file,
+                            ResizeMode::Fit(
+                                SizeHint { w: Some(800), h: None }
+                            ))
+                        {
+                            Some(i) => i.relative_url,
+                            None => "".to_string(),
+                        };
+
                         let mut vals = globals::Globals::new()
                             .with("title", found.title)
-                            .with("file", ["/i/", found.file.to_string_lossy().as_ref()].concat())
+                            .with("file", ["/ic/", image_url.as_ref()].concat())
                             .with("width", "".into())
                             .with("height", "".into());
 
@@ -115,16 +129,17 @@ fn send_page(index: &mut index::Index, req: &mut Request) -> IronResult<Response
 fn main() {
     // our "database", simply load from json file.
     let index = Arc::new(Mutex::new(index::Index::from_file("data/index.json")));
+    let resizer = Mutex::new(Resizer::new(Path::new("data/images"), Path::new("cache/images")));
 
     let index_for_pages = index.clone();
     let mut router = Router::new();
     router.get("/:slug", move |req: &mut Request| -> IronResult<Response> {
-        match index_for_pages.lock() {
-            Ok(mut index) => {
-                send_page(&mut index, req)
+        match (index_for_pages.lock(), resizer.lock()) {
+            (Ok(mut index), Ok(mut resizer)) => {
+                send_page(&mut index, &mut resizer, req)
             },
-            Err(e) => {
-                println!("Error locking index: {:?}", e);
+            _ => {
+                println!("Error locking index or resizer");
                 Ok(Response::with(status::NotFound))
             }
         }
@@ -134,6 +149,7 @@ fn main() {
     let index_for_random = index.clone();
     mount
         .mount("/c/", router)
+        .mount("/ic/", Static::new(Path::new("cache/images")))
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
         .mount("/font/", Static::new(Path::new("public/font")))

@@ -1,4 +1,6 @@
 /data
+/cache
 /target
 /node_modules
 /bower_components
+/vendor
