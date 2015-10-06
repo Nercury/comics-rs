@@ -62,7 +62,7 @@ fn send_page(index: &mut index::Index, resizer: &mut Resizer, req: &mut Request)
                         let image_url = match resizer.get_resized_url(
                             &found.file,
                             ResizeMode::Fit(
-                                SizeHint { w: Some(800), h: None }
+                                SizeHint { w: Some(1000), h: None }
                             ))
                         {
                             Some(i) => i.relative_url,
@@ -108,7 +108,7 @@ fn send_page(index: &mut index::Index, resizer: &mut Resizer, req: &mut Request)
                         });
 
                         let parsed = template::parse(
-                            "static/plain/comic.html",
+                            "views/comic.html",
                             vals
                         );
                         let mut response = Response::with((status::Ok, parsed));
@@ -146,9 +146,38 @@ fn main() {
     });
 
     let mut mount = Mount::new();
+    let index_for_first_page = index.clone();
     let index_for_random = index.clone();
     mount
+        .mount("/", move |_req: &mut Request| -> IronResult<Response> {
+            match index_for_first_page.lock() {
+                Ok(index) => {
+                    match index.last_slug() {
+                        Some(slug) => {
+                            let mut response = Response::with(status::SeeOther);
+                            response.headers.set(
+                                Location(["/c/", slug.as_ref()].concat())
+                            );
+                            response.headers.set(
+                                CacheControl(vec![
+                                    CacheDirective::NoCache,
+                                ])
+                            );
+                            Ok(response)
+                        },
+                        None => {
+                            Ok(Response::with(status::NotFound))
+                        }
+                    }
+                },
+                Err(e) => {
+                    println!("Error locking index: {:?}", e);
+                    Ok(Response::with(status::NotFound))
+                }
+            }
+        })
         .mount("/c/", router)
+        .mount("/favicon.png", Static::new(Path::new("public/favicon.png")))
         .mount("/ic/", Static::new(Path::new("cache/images")))
         .mount("/css/", Static::new(Path::new("public/css")))
         .mount("/js/", Static::new(Path::new("public/js")))
@@ -184,6 +213,7 @@ fn main() {
     let mut chain = Chain::new(mount);
 
     chain = enable_browser_cache(chain);
+    chain.link_after(iron_ex::not_found::NotFoundPage::new("views/not_found.html"));
 
     Iron::new(chain).http("localhost:3000").unwrap();
 }

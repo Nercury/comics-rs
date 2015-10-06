@@ -33,7 +33,7 @@ fn main() {
 
     f.write_all(&s.bytes().collect::<Vec<_>>()).unwrap();
 
-    let src = Path::new("static").to_path_buf();
+    let src = Path::new("views").to_path_buf();
     let dst = Path::new("target");
 
     let mut copy_queue: VecDeque<PathBuf> = VecDeque::new();

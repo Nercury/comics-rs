@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width" />
+        <link rel="shortcut icon" href="/favicon.png" />
         <title>{{ title }}</title>
         {{ css }}
     </head>
@@ -26,8 +27,30 @@
                     </a></li>
                 </ul>
             </div>
-            <div>
-                <img src="{{ file }}" alt="{{ title }}" width="{{ width }}" height={{ height }} />
+        </div>
+        <div class="content emphasize">
+            <h1>{{ title }}</h1>
+            <img src="{{ file }}" alt="{{ title }}" />
+        </div>
+        <div class="wrapper">
+            <div class="nav">
+                <ul>
+                    <li><a class="first {{ first_disabled }} icon-to-start" href="{{ first_href }}">
+                        <span>First</span>
+                    </a></li>
+                    <li><a class="prev {{ prev_disabled }} icon-left-fat" href="{{ prev_href }}">
+                        <span>Prev</span>
+                    </a></li>
+                    <li><a class="random {{ random_disabled }} icon-help" href="{{ random_href }}">
+                        <span>Random</span>
+                    </a></li>
+                    <li><a class="next {{ next_disabled }} icon-right-fat" href="{{ next_href }}">
+                        <span>Next</span>
+                    </a></li>
+                    <li><a class="last {{ last_disabled }} icon-to-end" href="{{ last_href }}">
+                        <span>Last</span>
+                    </a></li>
+                </ul>
             </div>
         </div>
     </body>
