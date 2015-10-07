@@ -200,7 +200,6 @@ fn main() {
         .mount("/favicon.png", Static::new(Path::new("public/favicon.png")))
         .mount("/ic/", Static::new(Path::new("cache/images")))
         .mount("/css/", Static::new(Path::new("public/css")))
-        .mount("/js/", Static::new(Path::new("public/js")))
         .mount("/font/", Static::new(Path::new("public/font")))
         .mount("/i/", Static::new(Path::new("data/images")))
         .mount("/random", move |_req: &mut Request| -> IronResult<Response> {
