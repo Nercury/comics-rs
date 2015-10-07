@@ -2,6 +2,7 @@
 name = "comics"
 version = "0.0.1"
 dependencies = [
+ "cookie 0.1.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.6.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "image 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "iron 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -15,6 +16,7 @@ dependencies = [
  "syntex 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "time 0.1.32 (registry+https://github.com/rust-lang/crates.io-index)",
  "unicase 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "url 0.2.37 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

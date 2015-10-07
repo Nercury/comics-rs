@@ -29,7 +29,7 @@ impl AfterMiddleware for NotFoundPage {
 
         let parsed = template::parse(
             &self.path,
-            globals::Globals::new()
+            &globals::Globals::new()
         );
 
         res.body = Some(Box::new(parsed));

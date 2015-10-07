@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <title>Login</title>
+        {{ css }}
+    </head>
+    <body>
+        <div class="message emphasize">
+            {{ message }}
+            <form method="GET" action="/login-post">
+                <input name="username" type="text" placeholder="username" />
+                <input name="password" type="password" placeholder="password" />
+                <input type="submit" value="Login" />
+            </form>
+        </p>
+    </body>
+</html>

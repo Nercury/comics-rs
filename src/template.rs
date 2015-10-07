@@ -25,7 +25,7 @@ fn get_replacement<'g>(sequence: &[u8], globals: &'g Globals) -> &'g [u8] {
     }
 }
 
-pub fn parse(file: &str, globals: Globals) -> Vec<u8> {
+pub fn parse(file: &str, globals: &Globals) -> Vec<u8> {
     let path = Path::new(file);
     let display = path.display();
 

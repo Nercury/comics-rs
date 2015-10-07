@@ -15,6 +15,8 @@ serde = "*"
 serde_json = "*"
 rand = "*"
 image = "*"
+url = "*"
+cookie = "0.1.21"
 
 [build-dependencies]
 serde_codegen = "*"
