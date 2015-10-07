@@ -8,8 +8,9 @@ use std::collections::VecDeque;
 use std::process;
 
 fn main() {
-    inner::gen_index_models();
-    inner::gen_resizer_models();
+    inner::gen_models("index_models");
+    inner::gen_models("resizer_models");
+    inner::gen_models("users_models");
 
     let out_dir = env::var_os("OUT_DIR").unwrap();
 
@@ -69,23 +70,14 @@ mod inner {
     use std::env;
     use std::path::Path;
 
-    pub fn gen_index_models() {
+    pub fn gen_models(file: &str) {
+        let src_name = ["src/", file, ".rs.in"].concat();
+        let dst_name = [file, ".rs"].concat();
+
         let out_dir = env::var_os("OUT_DIR").unwrap();
 
-        let src = Path::new("src/index_models.rs.in");
-        let dst = Path::new(&out_dir).join("index_models.rs");
-
-        let mut registry = syntex::Registry::new();
-
-        serde_codegen::register(&mut registry);
-        registry.expand("", &src, &dst).unwrap();
-    }
-
-    pub fn gen_resizer_models() {
-        let out_dir = env::var_os("OUT_DIR").unwrap();
-
-        let src = Path::new("src/resizer_models.rs.in");
-        let dst = Path::new(&out_dir).join("resizer_models.rs");
+        let src = Path::new(&src_name);
+        let dst = Path::new(&out_dir).join(&dst_name);
 
         let mut registry = syntex::Registry::new();
 
@@ -96,6 +88,5 @@ mod inner {
 
 #[cfg(feature = "serde_macros")]
 mod inner {
-    pub fn gen_index_models() {}
-    pub fn gen_resizer_models() {}
+    pub fn gen_models(_file: &str) { }
 }

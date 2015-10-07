@@ -21,6 +21,8 @@ mod release;
 mod index_models;
 mod resizer;
 mod resizer_models;
+mod users;
+mod users_models;
 
 use iron::prelude::*;
 use iron::status;
@@ -49,23 +51,7 @@ fn send_page(index: &mut index::Index, resizer: &mut Resizer, req: &mut Request,
             Some(ref slug) => {
                 match index.find(slug) {
                     Some(found) => {
-                        let admin_access = match req.headers.get::<Cookie>() {
-                            Some(&Cookie(ref vals)) => {
-                                if vals.len() == 0 {
-                                    false
-                                } else {
-                                    let maybe_cookie = vals.iter().find(|v| match *v {
-                                        &CookiePair { ref name, .. } if name == "session" => true,
-                                        _ => false,
-                                    });
-                                    match maybe_cookie {
-                                        Some(&CookiePair { ref value, .. }) if value == cookie => true,
-                                        _ => false,
-                                    }
-                                }
-                            },
-                            _ => false,
-                        };
+                        let admin_access = check_admin(req, cookie);
 
                         let image_url = match resizer.get_resized_url(
                             &found.file,
@@ -153,8 +139,7 @@ fn main() {
     let index = Arc::new(Mutex::new(index::Index::from_file("data/index.json")));
     let resizer = Mutex::new(Resizer::new(Path::new("data/images"), Path::new("cache/images")));
     let admin_cookie = random_str(120);
-
-    println!("cookie: {:?}", admin_cookie);
+    let users = Mutex::new(users::Users::from_file("config/users.json").expect("failed to load users"));
 
     let index_for_pages = index.clone();
     let cookie_for_page = admin_cookie.clone();
@@ -248,7 +233,10 @@ fn main() {
                         .collect::<HashMap<_, _>>();
 
                     match (items.get("username").map(|v| v.as_ref()), items.get("password").map(|v| v.as_ref())) {
-                        (Some("krabas"), Some("krabasseptyntaskis")) => true,
+                        (Some(username), Some(pass)) => match users.lock() {
+                            Ok(u) => u.authorize(username, pass),
+                            _ => false,
+                        },
                         _ => false,
                     }
                 },
@@ -321,6 +309,26 @@ fn append_link(
         Some(href) => href,
         None => "javascript:;".into(),
     });
+}
+
+fn check_admin(req: &Request, required_cookie: &str) -> bool {
+    match req.headers.get::<Cookie>() {
+        Some(&Cookie(ref vals)) => {
+            if vals.len() == 0 {
+                false
+            } else {
+                let maybe_cookie = vals.iter().find(|v| match *v {
+                    &CookiePair { ref name, .. } if name == "session" => true,
+                    _ => false,
+                });
+                match maybe_cookie {
+                    Some(&CookiePair { ref value, .. }) if value == required_cookie => true,
+                    _ => false,
+                }
+            }
+        },
+        _ => false,
+    }
 }
 
 #[cfg(feature = "prod")]

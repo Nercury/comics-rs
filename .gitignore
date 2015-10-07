@@ -1,4 +1,5 @@
 /data
+/config
 /cache
 /target
 /node_modules

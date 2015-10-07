@@ -66,8 +66,6 @@ impl Storage {
             storage.push(item.title, item.slug, &item.file);
         }
 
-        println!("Storage {:#?}", storage);
-
         Some(storage)
     }
 
